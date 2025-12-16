@@ -99,6 +99,7 @@
   background: rgba(94, 86, 231, 0.12);
   font-size: 1.2rem;
 }
+
 .genre-card__icon img {
   width: 24px;
   height: 24px;
@@ -119,6 +120,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .genre-card__chevron img {
   width: 18px;
   height: 18px;

@@ -8,13 +8,13 @@ import PhilosophyIcon from '../assets/images/Philosophy.svg';
 import PoliticsIcon from '../assets/images/Politics.svg';
 
 export const GENRES = [
-  { label: 'Fiction', icon: FictionIcon },
-  { label: 'Drama', icon: DramaIcon },
-  { label: 'Humour', icon: HumourIcon },
-  { label: 'Politics', icon: PoliticsIcon },
-  { label: 'Philosophy', icon: PhilosophyIcon },
-  { label: 'History', icon: HistoryIcon },
-  { label: 'Adventure', icon: AdventureIcon },
+  { id: 'fiction', label: 'Fiction', icon: FictionIcon },
+  { id: 'drama', label: 'Drama', icon: DramaIcon },
+  { id: 'humour', label: 'Humour', icon: HumourIcon },
+  { id: 'politics', label: 'Politics', icon: PoliticsIcon },
+  { id: 'philosophy', label: 'Philosophy', icon: PhilosophyIcon },
+  { id: 'history', label: 'History', icon: HistoryIcon },
+  { id: 'adventure', label: 'Adventure', icon: AdventureIcon },
 ];
 
 export const NEXT_ICON = NextIcon;
