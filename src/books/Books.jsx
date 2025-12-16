@@ -1,17 +1,45 @@
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import BackIcon from '../assets/images/Back.svg';
-import SearchIcon from '../assets/images/Search.svg';
+import SearchBox from './SearchBox';
+import BookCard from './BookCard';
 import { GENRES } from '../genre/constants';
-import { BOOKS_BY_GENRE, DEFAULT_GENRE_ID } from './constants';
+import { API_URL, DEFAULT_GENRE_ID } from './constants';
 import '../genre/genre.css';
 import './books.css';
 
 function Books() {
   const { genreId: routeGenreId } = useParams();
+  const [searchValue, setSearchValue] = useState('');
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const genreId = routeGenreId || DEFAULT_GENRE_ID;
   const genre = GENRES.find((g) => g.id === genreId);
   const displayName = genre?.label ?? 'Genre';
-  const books = BOOKS_BY_GENRE[genreId] ?? BOOKS_BY_GENRE[DEFAULT_GENRE_ID];
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const url = new URL(API_URL);
+        url.searchParams.set('topic', displayName.toLowerCase());
+        if (searchValue.trim()) {
+          url.searchParams.set('search', searchValue.trim());
+        }
+        const response = await fetch(url);
+        const data = await response.json();
+        setBooks(data.results || []);
+      } catch (error) {
+        console.error('Failed to fetch books:', error);
+        setBooks([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, [searchValue, displayName]);
 
   return (
     <main className="page page--books">
@@ -23,26 +51,21 @@ function Books() {
           </Link>
         </header>
 
-        <div className="books-search">
-          <span className="books-search__icon">
-            <img src={SearchIcon} alt="" />
-          </span>
-          <input
-            type="text"
-            placeholder="Search"
-            aria-label={`Search books in ${displayName}`}
-          />
-        </div>
+        <SearchBox value={searchValue} onChange={setSearchValue} />
 
-        <div className="books-grid">
-          {books.map((book) => (
-            <article className="book-card" key={book.id}>
-              <div className="book-card__cover" />
-              <h3 className="book-card__title">{book.title}</h3>
-              <p className="book-card__author">{book.author}</p>
-            </article>
-          ))}
-        </div>
+        {loading ? (
+          <div className="books-loader">
+            <div className="books-loader__spinner" />
+          </div>
+        ) : (
+          <div className="books-content">
+            <div className="books-grid">
+              {books.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </main>
   );

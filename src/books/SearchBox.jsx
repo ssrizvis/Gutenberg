@@ -1,32 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import CancelIcon from '../assets/images/Cancel.svg';
 import SearchIcon from '../assets/images/Search.svg';
 
+const DEBOUNCE_DELAY = 300;
+
 function SearchBox({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);
+  const debounceTimer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
 
   const handleInputChange = (event) => {
-    onChange?.(event.target.value);
+    const newValue = event.target.value;
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      onChange?.(newValue);
+    }, DEBOUNCE_DELAY);
   };
 
   const handleClear = () => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
     onChange?.('');
   };
 
   const hasValue = Boolean(value && value.trim().length > 0);
 
   const className = [
-    'search-box',
-    isFocused ? 'search-box--focused' : '',
-    hasValue ? 'search-box--filled' : '',
+    'books-search',
+    isFocused ? 'books-search--focused' : '',
+    hasValue ? 'books-search--filled' : '',
   ]
     .filter(Boolean)
     .join(' ');
 
   return (
     <div className={className}>
-      <span className="search-box__icon" aria-hidden="true">
-        <img style={{ marginTop: 5 }} src={SearchIcon} alt="" />
+      <span className="books-search__icon" aria-hidden="true">
+        <img src={SearchIcon} alt="" />
       </span>
       <input
         type="text"
@@ -39,7 +62,7 @@ function SearchBox({ value, onChange }) {
       {hasValue ? (
         <button
           type="button"
-          className="search-box__clear"
+          className="books-search__clear"
           onClick={handleClear}
           aria-label="Clear search"
         >
@@ -49,5 +72,10 @@ function SearchBox({ value, onChange }) {
     </div>
   );
 }
+
+SearchBox.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
 
 export default SearchBox;
