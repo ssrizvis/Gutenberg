@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom';
 import { GENRES, NEXT_ICON } from './constants';
 
 function GenreList() {
   return (
     <section className="genres">
       {GENRES.map((item) => (
-        <a className="genre-card" href="#" key={item.label}>
+        <Link className="genre-card" to={`/books/${item.id}`} key={item.id}>
           <span className="genre-card__icon" aria-hidden="true">
             <img src={item.icon} alt="" />
           </span>
@@ -12,7 +13,7 @@ function GenreList() {
           <span className="genre-card__chevron" aria-hidden="true">
             <img src={NEXT_ICON} alt="" />
           </span>
-        </a>
+        </Link>
       ))}
     </section>
   );
